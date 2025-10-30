@@ -1,8 +1,6 @@
-import { threadId } from "worker_threads";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { PlombService } from "~/server/services/plombService";
 
 export const chatbotRouter = createTRPCRouter({
   sendChatMessage: publicProcedure
@@ -14,7 +12,7 @@ export const chatbotRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const userChatMessage = await ctx.db.chatMessage.create({
+      const chatMessage = await ctx.db.chatMessage.create({
         data: {
           content: input.content,
           senderType: "USER",
@@ -22,36 +20,7 @@ export const chatbotRouter = createTRPCRouter({
           threadId: input.threadId,
         },
       });
-
-      const plombService = new PlombService();
-
-      try {
-        const chatbotResponse = await plombService.processMessage(
-          input.threadId,
-          input.userEmail,
-          input.content,
-        );
-
-        await ctx.db.chatMessage.create({
-          data: {
-            content: chatbotResponse,
-            senderType: "BOT",
-            userEmail: input.userEmail,
-            threadId: input.threadId,
-          },
-        });
-      } catch (error) {
-        await ctx.db.chatMessage.create({
-          data: {
-            content: "Por favor, intenta enviar de nuevo tu mensaje.",
-            senderType: "SYSTEM",
-            userEmail: input.userEmail,
-            threadId: input.threadId,
-          },
-        });
-      }
-
-      return { id: userChatMessage.id };
+      return { id: chatMessage.id };
     }),
 
   sendWelcomeMessage: publicProcedure

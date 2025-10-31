@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { generateChatResponse } from "~/server/services/geminiService";
 
 export const chatbotRouter = createTRPCRouter({
   sendChatMessage: publicProcedure
@@ -12,7 +13,8 @@ export const chatbotRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const chatMessage = await ctx.db.chatMessage.create({
+      // Save user message
+      const userMessage = await ctx.db.chatMessage.create({
         data: {
           content: input.content,
           senderType: "USER",
@@ -20,7 +22,25 @@ export const chatbotRouter = createTRPCRouter({
           threadId: input.threadId,
         },
       });
-      return { id: chatMessage.id };
+
+      // Generate AI response using Gemini
+      const aiResponse = await generateChatResponse(input.content);
+
+      // Save AI response
+      const systemMessage = await ctx.db.chatMessage.create({
+        data: {
+          content: aiResponse,
+          senderType: "SYSTEM",
+          userEmail: input.userEmail,
+          threadId: input.threadId,
+        },
+      });
+
+      return { 
+        userMessageId: userMessage.id,
+        systemMessageId: systemMessage.id,
+        response: aiResponse,
+      };
     }),
 
   sendWelcomeMessage: publicProcedure

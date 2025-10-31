@@ -1,17 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { env } from "~/env";
-
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API_KEY);
 
 export async function generateChatResponse(
   message: string,
   context?: string,
 ): Promise<string> {
   try {
-    // Use Gemini 1.5 Flash for fast, efficient responses
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
     // Build the prompt with context about Diego
     const systemContext = context ?? `
 Eres un asistente virtual en el portafolio de Diego de la Vega Saishio, un Desarrollador Full-Stack.
@@ -30,13 +23,48 @@ Si no sabes algo específico, recomienda contactarlo directamente.
 
     const fullPrompt = `${systemContext}\n\nUsuario: ${message}\nAsistente:`;
 
-    const result = await model.generateContent(fullPrompt);
-    const response = result.response;
-    const text = response.text();
+    // Use REST API directly with v1 endpoint (not v1beta)
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${env.GOOGLE_GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: fullPrompt,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Gemini API Error:", errorData);
+      throw new Error(`Gemini API Error: ${JSON.stringify(errorData)}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.candidates || data.candidates.length === 0) {
+      throw new Error("No response candidates from Gemini");
+    }
+
+    const text = data.candidates[0].content.parts[0].text;
     return text;
   } catch (error) {
     console.error("Error generating chat response:", error);
+    
+    if (error instanceof Error) {
+      throw new Error(`Gemini API Error: ${error.message}`);
+    }
     throw new Error("Failed to generate response from Gemini AI");
   }
 }
@@ -45,21 +73,7 @@ export async function generateStreamingResponse(
   message: string,
   context?: string,
 ) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const systemContext = context ?? `
-Eres un asistente virtual en el portafolio de Diego de la Vega Saishio, un Desarrollador Full-Stack.
-Responde de manera amigable, profesional y concisa sobre Diego y su trabajo.
-`;
-
-    const fullPrompt = `${systemContext}\n\nUsuario: ${message}\nAsistente:`;
-
-    const result = await model.generateContentStream(fullPrompt);
-
-    return result.stream;
-  } catch (error) {
-    console.error("Error generating streaming response:", error);
-    throw new Error("Failed to generate streaming response from Gemini AI");
-  }
+  // For now, return the same as non-streaming
+  // Can be implemented later with streamGenerateContent
+  return generateChatResponse(message, context);
 }

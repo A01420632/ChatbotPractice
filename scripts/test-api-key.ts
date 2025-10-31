@@ -1,5 +1,7 @@
 // Test simple para verificar si la API key funciona
-const API_KEY = "AIzaSyA8et2aBvMps3p9RaK4yQ7hJ5y0qfftAGU";
+import { env } from "~/env";
+
+const API_KEY = env.GOOGLE_GEMINI_API_KEY;
 
 async function testApiKey() {
   try {

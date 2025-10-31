@@ -23,9 +23,9 @@ Si no sabes algo específico, recomienda contactarlo directamente.
 
     const fullPrompt = `${systemContext}\n\nUsuario: ${message}\nAsistente:`;
 
-    // Use REST API directly with v1 endpoint (not v1beta)
+    // Use REST API directly with v1 endpoint - using gemini-2.0-flash
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${env.GOOGLE_GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${env.GOOGLE_GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {

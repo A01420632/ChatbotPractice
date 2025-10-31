@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ChatWidget from "~/app/_components/chatWidget";
 
 export default function DemoPage() {
   return (
@@ -154,17 +155,8 @@ export default function DemoPage() {
         </div>
       </div>
 
-      {/* Chatbot Widget Scripts */}
-      <script src="/chat-widget-loader.js"></script>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-          window.ChatWidget.init({
-            token: 'SzG4I3zw7bWI4HPCCHuPUC8JqoTuCkdt'
-          });
-        `,
-        }}
-      />
+      {/* Chatbot Widget Component */}
+      <ChatWidget token="demo-token-u6qsSrIPkyifsmj_" domain="localhost" />
     </div>
   );
 }

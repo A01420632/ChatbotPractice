@@ -20,10 +20,10 @@ async function listModels() {
         const result = await model.generateContent("Hola, responde solo con 'OK'");
         const response = await result.response;
         const text = response.text();
-        console.log(`✅ ${modelName} - FUNCIONA`);
+        console.log(`${modelName} - FUNCIONA`);
         console.log(`   Respuesta: ${text}\n`);
       } catch (error: any) {
-        console.log(`❌ ${modelName} - Error: ${error.message}\n`);
+        console.log(`${modelName} - Error: ${error.message}\n`);
       }
     }
   } catch (error) {

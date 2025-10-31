@@ -19,7 +19,7 @@ async function listModels() {
     
     console.log("Modelos disponibles:");
     data.models.forEach((model: any) => {
-      console.log(`\n✅ ${model.name}`);
+      console.log(`\n ${model.name}`);
       console.log(`   Display Name: ${model.displayName}`);
       console.log(`   Supported methods: ${model.supportedGenerationMethods.join(", ")}`);
     });

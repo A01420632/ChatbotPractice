@@ -143,7 +143,7 @@ export default function ChatWidget({ token, domain }: ChatWidgetProps) {
 
           {!hasEmail && (
             <div className="flex flex-1 flex-col justify-center p-4">
-              <h4 className="mb-4 text-lg font-medium">¡Hola! 👋</h4>
+              <h4 className="mb-4 text-lg font-medium">¡Hola!</h4>
               <p className="mb-4 text-gray-600">
                 Para comenzar, necesitamos tus datos:
               </p>

@@ -16,12 +16,12 @@ async function testApiKey() {
     
     if (responseBeta.ok) {
       const data = await responseBeta.json();
-      console.log("✅ v1beta funciona!");
+      console.log("v1beta funciona!");
       console.log("Modelos disponibles:");
       data.models?.slice(0, 3).forEach((m: any) => console.log(`  - ${m.name}`));
     } else {
       const error = await responseBeta.json();
-      console.log("❌ v1beta error:", error.error.message);
+      console.log("v1beta error:", error.error.message);
     }
 
     // Probar con v1
@@ -32,12 +32,12 @@ async function testApiKey() {
     
     if (responseV1.ok) {
       const data = await responseV1.json();
-      console.log("✅ v1 funciona!");
+      console.log("v1 funciona!");
       console.log("Modelos disponibles:");
       data.models?.slice(0, 3).forEach((m: any) => console.log(`  - ${m.name}`));
     } else {
       const error = await responseV1.json();
-      console.log("❌ v1 error:", error.error.message);
+      console.log("v1 error:", error.error.message);
     }
 
   } catch (error) {

@@ -15,7 +15,7 @@ export default function DemoPage() {
           <div className="mb-8 flex flex-col md:flex-row items-center gap-8">
             <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
               <img
-                src="https://media.licdn.com/dms/image/v2/D4E03AQEZCGiaF8KBCA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1723121632537?e=1753920000&v=beta&t=hR78m-UurKvFdgungAUrXbSiGalNSXwGRX7GkB0Tkzg"
+                src="/diego-profile.jpg"
                 alt="Diego"
                 className="h-full w-full object-cover"
               />
